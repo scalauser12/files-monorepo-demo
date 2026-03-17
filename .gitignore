@@ -1,3 +1,26 @@
+# sbt
 target/
+project/target/
+project/project/
+
+# Build Server Protocol
 .bsp/
+
+# IDE - IntelliJ IDEA
 .idea/
+*.iml
+
+# IDE - VSCode
+.vscode/
+
+# Scala tooling - Metals & Bloop
+.metals/
+metals.*
+project/metals.sbt
+project/project/metals.sbt
+*.semanticdb
+.bloop/
+
+# OS
+.DS_Store
+Thumbs.db
