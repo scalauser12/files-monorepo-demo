@@ -31,8 +31,7 @@ object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
       MonorepoReleaseSteps.tagReleases,
       compressAndUploadStep,
       MonorepoReleaseSteps.setNextVersions,
-      MonorepoReleaseSteps.commitNextVersions,
-      MonorepoReleaseSteps.pushChanges
+      MonorepoReleaseSteps.commitNextVersions
     )
 
   private val compressAndUploadStep: Client[IO] => MonorepoStepIO =
