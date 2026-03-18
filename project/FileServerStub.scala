@@ -2,7 +2,7 @@ import cats.effect.{IO, Ref, Resource}
 import fs2.Chunk
 import org.http4s.{HttpApp, HttpRoutes}
 import org.http4s.client.Client
-import org.http4s.dsl.io._
+import org.http4s.dsl.io.*
 
 object FileServerStub {
 
