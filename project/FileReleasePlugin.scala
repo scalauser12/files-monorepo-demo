@@ -33,6 +33,7 @@ object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
       compressAndUploadStep,
       MonorepoReleaseSteps.setNextVersions,
       MonorepoReleaseSteps.commitNextVersions
+      // MonorepoReleaseSteps.pushChanges // disabled for now to avoid pushing to remote
     )
 
   private val compressAndUploadStep: Client[IO] => MonorepoStepIO =
@@ -40,7 +41,7 @@ object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
       .perProjectResource[Client[IO]]("compress-and-upload")
       .executeAction(client =>
         (ctx, project) => {
-          val dataFile = new File(project.baseDir, "data")
+          val dataFile = new File(project.baseDir, FileProjectsPlugin.dataFileName)
 
           val gzippedStream =
             Files[IO]

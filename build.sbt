@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
 
     // Version file: use version.txt (plain text, just the version string)
     releaseIOMonorepoVersionFile := ((ref: ProjectRef, state: State) =>
-      Project.extract(state).get(ref / baseDirectory) / "version.txt"
+      Project.extract(state).get(ref / baseDirectory) / FileProjectsPlugin.versionFileName
     ),
 
     // Read version: plain text
@@ -17,6 +17,9 @@ lazy val root = (project in file("."))
 
     // Write version: plain text
     releaseIOMonorepoVersionFileContents := ((_: File, ver: String) => IO.pure(ver + "\n")),
+
+    // Detect changed projects via git diff (default: true)
+    releaseIOMonorepoDetectChanges := true,
 
     releaseIOIgnoreUntrackedFiles := true
   )

@@ -3,6 +3,9 @@ import Keys.*
 
 object FileProjectsPlugin extends AutoPlugin {
 
+  val dataFileName    = "data"
+  val versionFileName = "version.txt"
+
   override def trigger = noTrigger
 
   lazy val discoveredProjects: Seq[Project] = {
@@ -11,7 +14,9 @@ object FileProjectsPlugin extends AutoPlugin {
       Option(projectsDir.listFiles())
         .getOrElse(Array.empty)
         .toSeq
-        .filter(dir => dir.isDirectory && (dir / "version.txt").isFile && (dir / "data").isFile)
+        .filter(dir =>
+          dir.isDirectory && (dir / versionFileName).isFile && (dir / dataFileName).isFile
+        )
         .sortBy(_.getName)
         .map(dir =>
           Project(dir.getName, dir).settings(
