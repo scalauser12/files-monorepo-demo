@@ -1,4 +1,5 @@
 import cats.effect.{IO, Ref, Resource}
+import fs2.Chunk
 import org.http4s.{HttpApp, HttpRoutes}
 import org.http4s.client.Client
 import org.http4s.dsl.io._
@@ -6,22 +7,23 @@ import org.http4s.dsl.io._
 object FileServerStub {
 
   def clientResource: Resource[IO, Client[IO]] =
-    Resource.eval(Ref.of[IO, Map[String, Array[Byte]]](Map.empty)).map { store =>
-      Client.fromHttpApp(httpApp(store))
-    }
+    Resource
+      .eval(Ref.of[IO, Map[String, Array[Byte]]](Map.empty))
+      .map(store => Client.fromHttpApp(httpApp(store)))
 
   private def httpApp(store: Ref[IO, Map[String, Array[Byte]]]): HttpApp[IO] =
     routes(store).orNotFound
 
   private def routes(store: Ref[IO, Map[String, Array[Byte]]]): HttpRoutes[IO] =
     HttpRoutes.of[IO] {
-
       case req @ PUT -> Root / "files" / project / version / filename =>
         val key = s"$project/$version/$filename"
-        req.body.compile.to(fs2.Chunk).flatMap { chunk =>
-          store.update(_ + (key -> chunk.toArray)) *>
-            Created(s"Stored $key (${chunk.size} bytes)")
-        }
+        req.body.compile
+          .to(Chunk)
+          .flatMap(chunk =>
+            store.update(_ + (key -> chunk.toArray)) *>
+              Created(s"Stored $key (${chunk.size} bytes)")
+          )
 
       case GET -> Root / "files" / project / version / filename =>
         val key = s"$project/$version/$filename"

@@ -1,32 +1,22 @@
-lazy val project1 = (project in file("projects/project1"))
-  .settings(name := "project1")
-
-lazy val project2 = (project in file("projects/project2"))
-  .settings(name := "project2")
-
-lazy val project3 = (project in file("projects/project3"))
-  .settings(name := "project3")
+import cats.effect.IO
 
 lazy val root = (project in file("."))
-  .aggregate(project1, project2, project3)
+  .aggregate(FileProjectsPlugin.discoveredProjects.map(p => LocalProject(p.id)): _*)
   .enablePlugins(FileReleasePlugin)
   .settings(
-    name := "files-monorepo-demo",
+    name         := "files-monorepo-demo",
+    scalaVersion := "2.12.21",
 
     // Version file: use version.txt (plain text, just the version string)
-    releaseIOMonorepoVersionFile := { (ref: ProjectRef, state: State) =>
+    releaseIOMonorepoVersionFile := ((ref: ProjectRef, state: State) =>
       Project.extract(state).get(ref / baseDirectory) / "version.txt"
-    },
+    ),
 
     // Read version: plain text
-    releaseIOMonorepoReadVersion := { (file: File) =>
-      cats.effect.IO.blocking(sbt.IO.read(file).trim)
-    },
+    releaseIOMonorepoReadVersion := ((file: File) => IO.blocking(sbt.IO.read(file).trim)),
 
     // Write version: plain text
-    releaseIOMonorepoVersionFileContents := { (_: File, ver: String) =>
-      cats.effect.IO.pure(ver + "\n")
-    },
+    releaseIOMonorepoVersionFileContents := ((_: File, ver: String) => IO.pure(ver + "\n")),
 
     releaseIOIgnoreUntrackedFiles := true
   )

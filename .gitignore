@@ -27,6 +27,6 @@ project/.bloop/
 .DS_Store
 Thumbs.db
 
-# Agentrs
+# Agents
 .claude/
 .mcp.json
