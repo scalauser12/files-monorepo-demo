@@ -18,9 +18,15 @@ project/project/
 metals.*
 project/metals.sbt
 project/project/metals.sbt
+project/project/project/metals.sbt
 *.semanticdb
 .bloop/
+project/.bloop/
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Agentrs
+.claude/
+.mcp.json
