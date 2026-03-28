@@ -18,8 +18,16 @@ lazy val root = (project in file("."))
     // Write version: plain text
     releaseIOMonorepoVersionFileContents := ((_: File, ver: String) => IO.pure(ver + "\n")),
 
+    // Preserve the demo's upload-only release flow while using the hook API.
+    releaseIOMonorepoEnableSnapshotDependenciesCheck := false,
+    releaseIOMonorepoEnableRunClean                  := false,
+    releaseIOMonorepoEnableRunTests                  := false,
+    releaseIOMonorepoEnablePublish                   := false,
+    releaseIOMonorepoEnablePush                      := false,
+
     // Detect changed projects via git diff (default: true)
     releaseIOMonorepoDetectChanges := true,
 
+    // Shared core VCS setting reused by the monorepo clean-working-dir check.
     releaseIOIgnoreUntrackedFiles := true
   )

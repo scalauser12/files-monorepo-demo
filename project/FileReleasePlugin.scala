@@ -1,5 +1,8 @@
-import _root_.io.release.monorepo.{MonorepoReleasePluginLike, MonorepoStepIO}
-import _root_.io.release.monorepo.steps.MonorepoReleaseSteps
+import _root_.io.release.monorepo.{
+  MonorepoProjectResourceHookIO,
+  MonorepoReleasePluginLike,
+  MonorepoResourceHooks
+}
 import cats.effect.{IO, Resource}
 import fs2.compression.Compression
 import fs2.io.file.{Files, Path}
@@ -17,31 +20,19 @@ object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
 
   override def resource: Resource[IO, Client[IO]] = FileServerStub.clientResource
 
-  override protected def monorepoReleaseProcess(
+  override protected def monorepoResourceHooks(
       state: State
-  ): Seq[Client[IO] => MonorepoStepIO] =
-    Seq(
-      MonorepoReleaseSteps.initializeVcs,
-      MonorepoReleaseSteps.checkCleanWorkingDir,
-      MonorepoReleaseSteps.resolveReleaseOrder,
-      MonorepoReleaseSteps.detectOrSelectProjects,
-      MonorepoReleaseSteps.inquireVersions,
-      MonorepoReleaseSteps.validateVersions,
-      MonorepoReleaseSteps.setReleaseVersions,
-      MonorepoReleaseSteps.commitReleaseVersions,
-      MonorepoReleaseSteps.tagReleases,
-      compressAndUploadStep,
-      MonorepoReleaseSteps.setNextVersions,
-      MonorepoReleaseSteps.commitNextVersions
-      // MonorepoReleaseSteps.pushChanges // disabled for now to avoid pushing to remote
+  ): MonorepoResourceHooks[Client[IO]] =
+    MonorepoResourceHooks(
+      afterTagHooks = Seq(compressAndUploadHook)
     )
 
-  private val compressAndUploadStep: Client[IO] => MonorepoStepIO =
-    MonorepoStepIO
-      .perProjectResource[Client[IO]]("compress-and-upload")
-      .executeAction(client =>
+  private val compressAndUploadHook: MonorepoProjectResourceHookIO[Client[IO]] =
+    MonorepoProjectResourceHookIO[Client[IO]](
+      name = "compress-and-upload",
+      execute = client =>
         (ctx, project) => {
-          val dataFile = new File(project.baseDir, FileProjectsPlugin.dataFileName)
+          val dataFile = projectDataFile(project.baseDir)
 
           val gzippedStream =
             Files[IO]
@@ -69,7 +60,18 @@ object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
                              s"[release-io] Uploaded ${project.name} $version data.gz: $response"
                            )
                          )
-          } yield ()
+          } yield ctx
+        },
+      validate = (_, project) =>
+        IO.blocking {
+          val dataFile = projectDataFile(project.baseDir)
+          if (!dataFile.isFile)
+            throw new IllegalStateException(
+              s"Missing data file for ${project.name}: ${dataFile.getAbsolutePath}"
+            )
         }
-      )
+    )
+
+  private def projectDataFile(baseDir: File): File =
+    new File(baseDir, FileProjectsPlugin.dataFileName)
 }

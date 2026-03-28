@@ -29,4 +29,5 @@ Thumbs.db
 
 # Agents
 .claude/
+.cursor/
 .mcp.json
