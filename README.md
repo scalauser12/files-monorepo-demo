@@ -42,21 +42,21 @@ Rather than hardcoding subprojects in `build.sbt`, the `FileProjectsPlugin` auto
 
 ### Version management
 
-Each subproject tracks its own version in a plain-text `version.txt` file (e.g. `0.1.0-SNAPSHOT`). The build configures custom version readers and writers through `sbt-release-io-monorepo` settings:
+Each subproject tracks its own version in a plain-text `version.txt` file (e.g. `0.1.0-SNAPSHOT`). The build configures custom version readers and writers through the grouped `sbt-release-io-monorepo` versioning settings:
 
-- `releaseIOMonorepoVersionFile` -- resolves the version file path per project
-- `releaseIOMonorepoReadVersion` -- reads the version string (using `IO.blocking` for safe file I/O)
-- `releaseIOMonorepoVersionFileContents` -- formats the version string for writing
+- `releaseIOMonorepoVersioningFile` -- resolves the version file path per project
+- `releaseIOMonorepoVersioningReadVersion` -- reads the version string (using `IO.blocking` for safe file I/O)
+- `releaseIOMonorepoVersioningFileContents` -- formats the version string for writing
 
 ### Hook and policy customization
 
-The build keeps the standard monorepo lifecycle intact and customizes it through settings rather than a raw process override:
+The build keeps the standard monorepo lifecycle intact and customizes it through the grouped policy settings rather than a raw process override:
 
-- `releaseIOMonorepoEnableSnapshotDependenciesCheck := false`
-- `releaseIOMonorepoEnableRunClean := false`
-- `releaseIOMonorepoEnableRunTests := false`
-- `releaseIOMonorepoEnablePublish := false`
-- `releaseIOMonorepoEnablePush := false`
+- `releaseIOMonorepoPolicyEnableSnapshotDependenciesCheck := false`
+- `releaseIOMonorepoPolicyEnableRunClean := false`
+- `releaseIOMonorepoPolicyEnableRunTests := false`
+- `releaseIOMonorepoPolicyEnablePublish := false`
+- `releaseIOMonorepoPolicyEnablePush := false`
 
 The custom `FileReleasePlugin` contributes a resource-backed `afterTag` hook, so the upload runs after tags are created and before the next development versions are written.
 
@@ -109,7 +109,7 @@ sbt "releaseFiles all-changed with-defaults release-version project1=0.1.0 next-
 
 - **Scala 2.12.21** (sbt meta-build)
 - **sbt 1.12.8**
-- **sbt-release-io-monorepo 0.7.0** -- monorepo-aware release plugin with cats-effect IO
+- **sbt-release-io-monorepo 0.8.1** -- monorepo-aware release plugin with cats-effect IO
 - **cats-effect 3** -- effectful programming
 - **http4s 0.23.33** -- HTTP client and server DSL
 - **fs2 3.12.2** -- streaming I/O and gzip compression
