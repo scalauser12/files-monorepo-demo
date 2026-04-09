@@ -109,7 +109,7 @@ sbt "releaseFiles all-changed with-defaults release-version project1=0.1.0 next-
 
 - **Scala 2.12.21** (sbt meta-build)
 - **sbt 1.12.8**
-- **sbt-release-io-monorepo 0.8.1** -- monorepo-aware release plugin with cats-effect IO
+- **sbt-release-io-monorepo 0.9.2** -- monorepo-aware release plugin with cats-effect IO
 - **cats-effect 3** -- effectful programming
 - **http4s 0.23.33** -- HTTP client and server DSL
 - **fs2 3.12.2** -- streaming I/O and gzip compression
