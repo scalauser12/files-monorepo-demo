@@ -1,4 +1,4 @@
-addSbtPlugin("io.github.scalauser12" % "sbt-release-io-monorepo" % "0.9.2")
+addSbtPlugin("io.github.scalauser12" % "sbt-release-io-monorepo" % "0.10.0")
 
 // Meta-build deps for FileReleasePlugin.scala and FileServerStub.scala
 libraryDependencies ++= Seq(
