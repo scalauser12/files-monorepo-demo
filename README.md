@@ -1,6 +1,6 @@
 # files-monorepo-demo
 
-A demonstration Scala sbt monorepo that showcases a custom release plugin for compressing and uploading project data files via HTTP. Built on top of [sbt-release-io-monorepo](https://github.com/scalauser12/sbt-release-io), it illustrates how to customize the monorepo release lifecycle with hook/policy settings and a domain-specific resource hook.
+A demonstration Scala sbt monorepo that showcases a custom release plugin for compressing and uploading project data files via HTTP. Built on top of [sbt-release-io-monorepo](https://github.com/scalauser12/sbt-release-io), it illustrates how to customize the monorepo release lifecycle with hook/policy settings and a domain-specific resource hook built with the newer `sideEffect` factory style.
 
 ## What this project demonstrates
 
@@ -20,7 +20,7 @@ files-monorepo-demo/
   project/
     plugins.sbt                      # Plugin dependencies
     FileProjectsPlugin.scala         # Auto-discovers subprojects
-    FileReleasePlugin.scala          # Custom release plugin with an afterTag upload hook
+    FileReleasePlugin.scala          # Custom release plugin with an afterTag upload hook built via the sideEffect factory
     FileServerStub.scala             # In-memory HTTP server stub
   projects/
     project1/
@@ -50,7 +50,7 @@ Each subproject tracks its own version in a plain-text `version.txt` file (e.g. 
 
 ### Hook and policy customization
 
-The build keeps the standard monorepo lifecycle intact and customizes it through the grouped policy settings rather than a raw process override. On `sbt-release-io-monorepo` `0.11.0`, these grouped `.sbt` keys remain the supported configuration surface for this build:
+The build keeps the standard monorepo lifecycle intact and customizes it through the grouped policy settings rather than a raw process override. On `sbt-release-io-monorepo` `0.12.0`, these grouped `.sbt` keys remain the supported configuration surface for this build:
 
 - `releaseIOMonorepoPolicyEnableSnapshotDependenciesCheck := false`
 - `releaseIOMonorepoPolicyEnableRunClean := false`
@@ -58,7 +58,7 @@ The build keeps the standard monorepo lifecycle intact and customizes it through
 - `releaseIOMonorepoPolicyEnablePublish := false`
 - `releaseIOMonorepoPolicyEnablePush := false`
 
-The custom `FileReleasePlugin` contributes a resource-backed `afterTag` hook, so the upload runs after tags are created and before the next development versions are written.
+The custom `FileReleasePlugin` contributes a resource-backed `afterTag` hook via `MonorepoProjectResourceHookIO.sideEffect`, so the upload runs after tags are created and before the next development versions are written.
 
 ### Release process
 
@@ -78,7 +78,7 @@ With those policies and hooks in place, the effective `releaseFiles` flow is:
 | `setNextVersions` | Write next development versions (e.g. `0.2.0-SNAPSHOT`) |
 | `commitNextVersions` | Commit the next version changes |
 
-The custom `afterTag` hook runs per-project. For each project being released, it:
+The custom `afterTag` side-effect hook runs per-project. For each project being released, it:
 
 1. Reads the `data` file as an fs2 byte stream
 2. Pipes it through gzip compression
@@ -109,7 +109,7 @@ sbt "releaseFiles all-changed with-defaults release-version project1=0.1.0 next-
 
 - **Scala 2.12.21** (sbt meta-build)
 - **sbt 1.12.8**
-- **sbt-release-io-monorepo 0.11.0** -- monorepo-aware release plugin with cats-effect IO
+- **sbt-release-io-monorepo 0.12.0** -- monorepo-aware release plugin with cats-effect IO
 - **cats-effect 3** -- effectful programming
 - **http4s 0.23.33** -- HTTP client and server DSL
 - **fs2 3.12.2** -- streaming I/O and gzip compression

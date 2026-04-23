@@ -1,13 +1,16 @@
-import _root_.io.release.monorepo.{
-  MonorepoProjectResourceHookIO,
-  MonorepoReleasePluginLike,
-  MonorepoResourceHooks
-}
 import cats.effect.{IO, Resource}
 import fs2.compression.Compression
 import fs2.io.file.{Files, Path}
 import org.http4s.{Method, Request, Uri}
 import org.http4s.client.Client
+
+import _root_.io.release.monorepo.{
+  MonorepoContext,
+  MonorepoProjectResourceHookIO,
+  MonorepoReleasePluginLike,
+  MonorepoResourceHooks,
+  ProjectReleaseInfo
+}
 import sbt.*
 
 object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
@@ -27,11 +30,25 @@ object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
       afterTagHooks = Seq(compressAndUploadHook)
     )
 
+  private val validateDataFileExists
+      : (MonorepoContext, ProjectReleaseInfo) => IO[Unit] =
+    (_, project) => {
+      val dataFile = projectDataFile(project.baseDir)
+
+      IO.blocking(dataFile.isFile).flatMap { exists =>
+        if (exists) IO.unit
+        else
+          IO.raiseError(
+            new IllegalStateException(
+              s"Missing data file for ${project.name}: ${dataFile.getAbsolutePath}"
+            )
+          )
+      }
+    }
+
   private val compressAndUploadHook: MonorepoProjectResourceHookIO[Client[IO]] =
-    MonorepoProjectResourceHookIO[Client[IO]](
-      name = "compress-and-upload",
-      execute = client =>
-        (ctx, project) => {
+    MonorepoProjectResourceHookIO
+      .sideEffect[Client[IO]]("compress-and-upload") { (client, project, ctx) =>
           val dataFile = projectDataFile(project.baseDir)
 
           val gzippedStream =
@@ -60,17 +77,9 @@ object FileReleasePlugin extends MonorepoReleasePluginLike[Client[IO]] {
                              s"[release-io] Uploaded ${project.name} $version data.gz: $response"
                            )
                          )
-          } yield ctx
-        },
-      validate = (_, project) =>
-        IO.blocking {
-          val dataFile = projectDataFile(project.baseDir)
-          if (!dataFile.isFile)
-            throw new IllegalStateException(
-              s"Missing data file for ${project.name}: ${dataFile.getAbsolutePath}"
-            )
+          } yield ()
         }
-    )
+      .copy(validate = validateDataFileExists)
 
   private def projectDataFile(baseDir: File): File =
     new File(baseDir, FileProjectsPlugin.dataFileName)
