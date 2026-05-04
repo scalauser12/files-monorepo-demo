@@ -1,6 +1,6 @@
 # files-monorepo-demo
 
-A demonstration Scala sbt monorepo showcasing a custom release plugin that compresses and uploads project data files via HTTP. Uses `sbt-release-io-monorepo` `0.12.0` with a custom `FileReleasePlugin`.
+A demonstration Scala sbt monorepo showcasing a custom release plugin that compresses and uploads project data files via HTTP. Uses `sbt-release-io-monorepo` `0.13.0` with a custom `FileReleasePlugin`.
 
 Three subprojects:
 - **project1** (`projects/project1/`) — version tracked in `version.txt`
