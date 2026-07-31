@@ -7,7 +7,7 @@ Three subprojects:
 - **project2** (`projects/project2/`) — version tracked in `version.txt`
 - **project3** (`projects/project3/`) — version tracked in `version.txt`
 
-Scala 2.12 (sbt meta-build). sbt 1.12.8. cats-effect 3. http4s 0.23. fs2 3.12.
+Scala 3.8 (sbt meta-build). Scala 2.12 demo projects. sbt 2.0.4. cats-effect 3. http4s 0.23. fs2 3.12.
 
 ## Build & Test Commands
 
@@ -26,7 +26,7 @@ Scala 2.12 (sbt meta-build). sbt 1.12.8. cats-effect 3. http4s 0.23. fs2 3.12.
 
 ## Coding Conventions
 
-- Scala 2.12 with `-Xsource:3` — `import foo.{*, given}` and `[?]` wildcards are valid
+- The sbt 2 meta-build uses Scala 3 syntax; discovered demo projects use Scala 2.12.21
 - Use cats-effect `IO` for all effectful operations; wrap blocking calls in `IO.blocking`
 - Error handling: use `IO.raiseError` instead of throwing, `scala.util.control.NonFatal` in catch blocks
 - Prefer `_root_.io.release.X` when `import sbt.*` shadows the `io` package
