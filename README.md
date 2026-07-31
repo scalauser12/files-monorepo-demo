@@ -50,7 +50,7 @@ Each subproject tracks its own version in a plain-text `version.txt` file (e.g. 
 
 ### Hook and policy customization
 
-The build keeps the standard monorepo lifecycle intact and customizes it through the grouped policy settings rather than a raw process override. On `sbt-release-io-monorepo` `0.13.0`, these grouped `.sbt` keys remain the supported configuration surface for this build:
+The build keeps the standard monorepo lifecycle intact and customizes it through the grouped policy settings rather than a raw process override. On `sbt-release-io-monorepo` `0.13.7`, these grouped `.sbt` keys remain the supported configuration surface for this build:
 
 - `releaseIOMonorepoPolicyEnableSnapshotDependenciesCheck := false`
 - `releaseIOMonorepoPolicyEnableRunClean := false`
@@ -107,9 +107,10 @@ sbt "releaseFiles all-changed with-defaults release-version project1=0.1.0 next-
 
 ## Tech stack
 
+- **JDK 17+**
 - **Scala 2.12.21** (sbt meta-build)
 - **sbt 1.12.8**
-- **sbt-release-io-monorepo 0.13.0** -- monorepo-aware release plugin with cats-effect IO
+- **sbt-release-io-monorepo 0.13.7** -- monorepo-aware release plugin with cats-effect IO
 - **cats-effect 3** -- effectful programming
 - **http4s 0.23.33** -- HTTP client and server DSL
 - **fs2 3.12.2** -- streaming I/O and gzip compression
