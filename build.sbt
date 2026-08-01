@@ -1,7 +1,7 @@
 import cats.effect.IO
 
 lazy val root = (project in file("."))
-  .aggregate(FileProjectsPlugin.discoveredProjects.map(p => LocalProject(p.id)): _*)
+  .aggregate(FileProjectsPlugin.discoveredProjects.map(p => LocalProject(p.id))*)
   .enablePlugins(FileReleasePlugin)
   .settings(
     name         := "files-monorepo-demo",

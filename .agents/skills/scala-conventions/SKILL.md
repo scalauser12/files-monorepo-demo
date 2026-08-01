@@ -6,8 +6,9 @@ user-invocable: false
 
 ## Language & Build
 
-- Scala 2.12 with `scala212source3` dialect
-- sbt 1.12.6
+- Scala 2.12.21 for demo subprojects
+- Scala 3.8.x for the sbt meta-build
+- sbt 2.0.4
 - cats-effect 3, http4s 0.23, fs2 3.12
 
 ## Import Style

@@ -12,7 +12,7 @@ object FileProjectsPlugin extends AutoPlugin {
     val projectsDir = file("projects")
     if (projectsDir.isDirectory)
       Option(projectsDir.listFiles())
-        .getOrElse(Array.empty)
+        .getOrElse(Array.empty[File])
         .toSeq
         .filter(dir =>
           dir.isDirectory && (dir / versionFileName).isFile && (dir / dataFileName).isFile

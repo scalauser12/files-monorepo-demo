@@ -1,19 +1,19 @@
 # files-monorepo-demo
 
-A demonstration Scala sbt monorepo showcasing a custom release plugin that compresses and uploads project data files via HTTP. Uses `sbt-release-io-monorepo` `0.13.0` with a custom `FileReleasePlugin`.
+A demonstration Scala sbt monorepo showcasing a custom release plugin that compresses and uploads project data files via HTTP. Uses `sbt-release-io-monorepo` `0.13.7` with a custom `FileReleasePlugin`.
 
 Three subprojects:
 - **project1** (`projects/project1/`) — version tracked in `version.txt`
 - **project2** (`projects/project2/`) — version tracked in `version.txt`
 - **project3** (`projects/project3/`) — version tracked in `version.txt`
 
-Scala 2.12 (sbt meta-build). sbt 1.12.8. cats-effect 3. http4s 0.23. fs2 3.12.
+Scala 2.12 demo projects. Scala 3 meta-build via sbt 2.0.4. cats-effect 3. http4s 0.23. fs2 3.12.
 
 ## Build & Test Commands
 
 - `sbt compile` — compile the build definition (meta-build)
-- `sbt releaseFiles with-defaults` — run the full release process (compress, upload, tag, version bump)
-- `sbt releaseFiles with-defaults release-version 0.1.0 next-version 0.2.0-SNAPSHOT` — release with explicit versions
+- `sbt "releaseFiles with-defaults"` — run the full release process (compress, upload, tag, version bump)
+- `sbt "releaseFiles with-defaults release-version 0.1.0 next-version 0.2.0-SNAPSHOT"` — release with explicit versions
 
 ## Key Files
 
