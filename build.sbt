@@ -5,7 +5,7 @@ lazy val root = (project in file("."))
   .enablePlugins(FileReleasePlugin)
   .settings(
     name         := "files-monorepo-demo",
-    scalaVersion := "2.12.21",
+    scalaVersion := "3.8.4",
 
     // Version file: use version.txt (plain text, just the version string)
     releaseIOMonorepoVersioningFile := ((ref: ProjectRef, state: State) =>

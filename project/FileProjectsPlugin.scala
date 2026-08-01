@@ -22,7 +22,7 @@ object FileProjectsPlugin extends AutoPlugin {
           Project(dir.getName, dir).settings(
             name         := dir.getName,
             // Avoid warnings about missing Scala version
-            scalaVersion := "2.12.21"
+            scalaVersion := "3.8.4"
           )
         )
     else Seq.empty

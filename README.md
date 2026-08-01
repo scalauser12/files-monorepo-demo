@@ -107,7 +107,7 @@ sbt "releaseFiles all-changed with-defaults release-version project1=0.1.0 next-
 
 ## Tech stack
 
-- **Scala 2.12.21** (demo subprojects)
+- **Scala 3.8.4** (demo subprojects and sbt meta-build)
 - **sbt 2.0.4** (Scala 3 meta-build)
 - **sbt-release-io-monorepo 0.13.7** -- monorepo-aware release plugin with cats-effect IO
 - **cats-effect 3** -- effectful programming
